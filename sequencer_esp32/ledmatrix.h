@@ -1,3 +1,6 @@
+#define FASTLED_ESP32_HAS_RMT 1
+#define FASTLED_RMT_MAX_CHANNELS 1
+
 #include <FastLED.h>
 #include "sequencer.h"
 
