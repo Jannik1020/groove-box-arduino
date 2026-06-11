@@ -3,51 +3,51 @@
 #define NUM_LEDS 16
 #define DATA_PIN 13
 
+#include "sequencer.h"
 
 #include <Wire.h>
 #include <MCP23017_WE.h>
 #define MCP_ADDRESS 0x20 // (A2/A1/A0 = LOW)
-#define MCP_RESET_PIN 5
+#define MCP_RESET_PIN 12
 typedef MCP23017_WE MCP;
 MCP myMCP = MCP(MCP_ADDRESS, MCP_RESET_PIN);
 
 //CRGB leds[NUM_LEDS];
 
+// class Note {
+//   public: 
+//     unsigned int active: 1;
+//     unsigned int volume: 4;
+//     unsigned int pitch : 3;
 
-class Note {
-  public: 
-    unsigned int active: 1;
-    unsigned int volume: 4;
-    unsigned int pitch : 3;
+//     Note(): active(0), volume(0), pitch(0) {}
+//     Note(unsigned int active): active(active), volume(0), pitch(0) {}
+//     Note(unsigned int active, unsigned int volume, unsigned int pitch): active(active), volume(volume), pitch(pitch) {}
+// };
 
-    Note(): active(0), volume(0), pitch(0) {}
-    Note(unsigned int active): active(active), volume(0), pitch(0) {}
-    Note(unsigned int active, unsigned int volume, unsigned int pitch): active(active), volume(volume), pitch(pitch) {}
-};
+// class Sequencer {
+//   public:
+//   short currentBeat;
+//   Note noteMatrix[16][16];
 
-class Sequencer {
-  public:
-  short currentBeat;
-  Note noteMatrix[16][16];
+//   short activeInstrument;
 
-  short activeInstrument;
+//   void setNote(Note note, short beat) {
+//     noteMatrix[activeInstrument][beat] = note;
+//   }
 
-  void setNote(Note note, short beat) {
-    noteMatrix[activeInstrument][beat] = note;
-  }
+//   void toggleNote(short beat) {
+//     noteMatrix[activeInstrument][beat].active = !noteMatrix[activeInstrument][beat].active;
+//   }
 
-  void toggleNote(short beat) {
-    noteMatrix[activeInstrument][beat].active = !noteMatrix[activeInstrument][beat].active;
-  }
+//   void advanceBeat() {
+//     currentBeat = (currentBeat + 1) % 16;
+//   }
 
-  void advanceBeat() {
-    currentBeat = (currentBeat + 1) % 16;
-  }
-
-  void toStart() {
-    currentBeat = 0;
-  }
-};
+//   void fromStart() {
+//     currentBeat = 0;
+//   }
+// };
 
 
 class SoundOutput {
@@ -174,12 +174,14 @@ int bpmToDelay(int bpm) {
   return (60.0 / bpm) * 1000.0;
 }
 
+int tempo = bpmToDelay(120);
+
 unsigned long lastStepAdvance = 0;
 unsigned long lastRendered = 0;
 unsigned long lastPolledButtons = 0;
 unsigned long currentMillis= 0;
 
-int tempo = bpmToDelay(120);
+
 
 byte portStatusA;
 byte portStatusB;
