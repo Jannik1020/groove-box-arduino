@@ -2,7 +2,7 @@ class Note {
   public: 
     unsigned int active: 1;
     unsigned int volume: 4;
-    unsigned int pitch : 3;
+    unsigned int pitch : 4;
 
     Note(): active(0), volume(0), pitch(0) {}
     Note(unsigned int active): active(active), volume(0), pitch(0) {}
@@ -17,7 +17,7 @@ class Sequencer {
   short activeInstrument;
 
   void setNote(Note note, short beat);
-  void toggleNote(short beat);
+  void toggleNote(int note, short beat);
   void advanceBeat();
   void fromStart();
 };

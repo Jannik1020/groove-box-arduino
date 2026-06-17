@@ -11,6 +11,8 @@ class LEDMatrix {
   public:
   Sequencer& sequencer;
   CRGB leds[256];
+  std::vector<CRGB> rowColors = {CRGB::Blue, CRGB::Yellow, CRGB::Cyan, CRGB::Red, CRGB::Green};
+  short defaultBrightness = 10;
 
   LEDMatrix(Sequencer& sequencer);
 

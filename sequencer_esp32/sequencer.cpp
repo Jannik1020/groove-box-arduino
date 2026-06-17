@@ -6,8 +6,9 @@ void Sequencer::setNote(Note note, short beat) {
     noteMatrix[activeInstrument][beat] = note;
 }
 
-void Sequencer::toggleNote(short beat) {
+void Sequencer::toggleNote(int note, short beat) {
     noteMatrix[activeInstrument][beat].active = !noteMatrix[activeInstrument][beat].active;
+    noteMatrix[activeInstrument][beat].pitch = note;
 }
 
 void Sequencer::advanceBeat() {
