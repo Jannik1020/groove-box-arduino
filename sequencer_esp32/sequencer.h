@@ -20,4 +20,6 @@ class Sequencer {
   void toggleNote(int note, short beat);
   void advanceBeat();
   void fromStart();
+  void clearRow(int row);
+  void pause();
 };

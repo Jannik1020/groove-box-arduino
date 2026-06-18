@@ -18,3 +18,12 @@ void Sequencer::advanceBeat() {
 void Sequencer::fromStart() {
     currentBeat = 0;
 }
+
+void Sequencer:: clearRow(int row)
+{
+  for(int i = 0; i < 16; i++)
+  {
+    if(noteMatrix[activeInstrument][i].active) 
+        noteMatrix[activeInstrument][i].active = 0;
+  }
+}

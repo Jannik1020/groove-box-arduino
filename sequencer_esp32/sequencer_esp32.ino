@@ -42,6 +42,8 @@ char hexaKeys[ROWS][COLS] = {
 byte rowPins[ROWS] = {0,1,2,3}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {7, 6, 5, 4}; //connect to the column pinouts of the keypad
 
+bool paused = true;
+
 //initialize an instance of class NewKeypad
 Keypad_MC17 customKeypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS, MCP_ADDRESS_2); 
 
@@ -86,12 +88,16 @@ int tempo = 120;
 int tempoMs = bpmToDelay(tempo);
 
 short note = 0;
-
-
+int limiter = 16;
 void setTempo(int newTempo) {
+  if(newTempo <= 700)
+  {
     tempo = newTempo;
     rotaryEncoder.setEncoderValue(newTempo);
     tempoMs = bpmToDelay(newTempo);
+  }
+  else
+    tempo = 700;
 }
 
 void IRAM_ATTR readEncoderISR()
@@ -219,11 +225,11 @@ void handleRotaryEncoder()
 
 
 void doubleDivision() {
-    setTempo(tempo*2);
+  setTempo(tempo*2);
 }
 
 void halveDivision() {
-    setTempo(tempo*2);
+  setTempo(tempo/2);
 }
 
 int envGain = 0;
@@ -234,8 +240,11 @@ void updateControl(){
   currentMillis = millis();
 
   /* step advance freq */
-  if(currentMillis - lastStepAdvance >= tempoMs) {
+  if((currentMillis - lastStepAdvance >= tempoMs) && (!paused)) {
     sequencer.advanceBeat();
+    if(sequencer.noteMatrix[5][sequencer.currentBeat].active) {
+      sequencer.currentBeat = 0;
+    }
     lastStepAdvance  = currentMillis;
 
     if(sequencer.noteMatrix[0][sequencer.currentBeat].active) {
@@ -277,7 +286,19 @@ void updateControl(){
 
         for (int i = 0; i < 16; i++) {
             if (((status >> i) & 1) == 0) {
-              sequencer.toggleNote(note, i);
+              if(sequencer.activeInstrument == 5)
+              {
+                sequencer.clearRow(5);
+                if(limiter != i)
+                {
+                  sequencer.toggleNote(note, i);
+                  limiter = i;
+                }
+                else
+                  limiter = 16;
+              }
+              else
+                sequencer.toggleNote(note, i);
 
             }
         }
@@ -368,6 +389,18 @@ void updateControl(){
 
         //envelope.noteOn();
       }
+      else if(customKey == 1)
+      {
+        beatPause();
+      }
+      else if(customKey == 2)
+      {
+        halveDivision();
+      }
+      else if(customKey == 3)
+      {
+        doubleDivision();
+      }
     }
     // else
     // {
@@ -395,4 +428,9 @@ AudioOutput updateAudio(){
 
 void loop() {
   audioHook();
+}
+
+void beatPause()
+{
+    paused = !paused;
 }
