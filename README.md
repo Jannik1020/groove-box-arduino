@@ -1,0 +1,11 @@
+Beleg Programmierung von Micrcontrollern, kleine Drumbox
+
+Die Drumbox funktioniert primär mit Buttons, einer Anzeige auf einer 16x16 LED-Matrix zur Anzeige und einem Drehregler zur Einstellung der Geschwindigkeit. 
+Es gibt 5 Instrumente, 4 Drums und ein Ton, mit dem man rudimentäre Melodien bauen kann. Ein Loop besteht aus 16 Schritten, welche sich immer wiederholen. Der Arduino mixt dabei in Echtzeit das aktuell eingestellte, daher können auch während des Loops Veränderungen vorgenommen werden. Es kann aber auch pausiert werden. Der Loop muss auch nicht immer 16 Schritte haben, sondern kann auf einen gewünschten Wert limitiert werden. 
+Die Einstellung eines jeweiligen Instrumentes passiert über das Drücken der entsprechenden korrespondierenden Zeile auf den vertikal angeordneten Knöpfen. Dabei sind die ersten 4 Drums und die 5. der Ton, sowie die 6. der "Limiter", womit der Loop an gewünschter Stelle begrenzt werden kann. Er wiederholt sich dann immer von dort.
+Nach dem Auswählen der Zeile kann durch das Drücken von einem der 16 horizontalen Knöpfe die Zeile in dem Schritt/Beat aktiviert werden. Beim Ton wird dabei der aktuell gewählte Ton eingespeichert. 
+Die Töne werden über 12 Knöpfe auf einer 4x4 Matrix eingestellt, ein Beispielton spielt dabei beim Drücken des Knopfes.
+Der aktuelle Loop ist auf der LED-Matrix sichtbar, jedes Instrument hat eine eigene Farbe und Zeile, sodass das lesen des Beats möglichst einfach ist. Ein Läufer zeigt dabei den aktuell abgespielten Beat an. 
+Direkt auf derselben Knöpfe-Matrix wie die Töne befindet sich auch der Pause/Weiter Knopf (Button 2). Wenn pausiert wird stoppt die Wiedergabe auf dem aktuellen Schritt/Beat und wird dann beim nächsten Drücken des Knopfes fortgesetzt. 
+Zusätzlich befinden sich dort noch ein Knopf um die Beats per Minute Schneller (verdoppelt) und Langsamer (halbiert) zu stellen. Für die Einstellung in Einzelschritten ist noch einen seperaten Drehregler, welcher durch habtisches Klicken Feedback gibt, dass man einen BpM schneller oder langsamer gestellt hat. 
+Die Audioausgabe erfolgt über ein externes Aux-Board (pcm5102) und einen Lautsprecher. Es werden reine Audiosignale ausgegeben, also muss der Lautsprecher fähig sein diese selber zu interpretieren. Stromzufuhr oder größere Verstärkung für passive Lautsprecher passiert nicht. 
