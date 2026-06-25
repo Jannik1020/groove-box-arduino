@@ -1,5 +1,10 @@
 # Kleine Groovebox / Drumbox
 
+## Entwickler
+s88210 - Jannik Thiele
+
+s83771 - Gregor Busch
+
 ## Projektbeschreibung
 
 Dieses Projekt entstand im Rahmen des Belegs **„Programmierung von Mikrocontrollern“**. Ziel war die Entwicklung einer kleinen Groovebox auf Basis eines Mikrocontrollers. Die Groovebox ermöglicht das Programmieren und Abspielen einfacher rhythmischer Patterns mit mehreren Instrumenten.
@@ -17,28 +22,36 @@ Ein Loop besteht grundsätzlich aus 16 Schritten, die fortlaufend wiederholt wer
 
 Zusätzlich kann die Wiedergabe pausiert und später an derselben Stelle fortgesetzt werden. Der Loop muss außerdem nicht zwingend alle 16 Schritte verwenden, sondern kann mithilfe eines Limiters auf eine gewünschte Länge begrenzt werden.
 
+
 ## Bedienung
 
 ### Instrumentenauswahl
 
 Die Auswahl eines Instruments erfolgt über die vertikal angeordneten Buttons. Jede Zeile entspricht dabei einer Funktion beziehungsweise einem Instrument:
 
-1. Drum 1
-2. Drum 2
-3. Drum 3
-4. Drum 4
-5. Ton / Melodie
-6. Limiter
+1. Bass Drum
+2. Snare
+3. Closed Hihat
+4. Open Hihat
+5. Oszillator (Sinus-Welle) mit 12 spielbaren Tönen
+6. Step-Limiter (Steps in einem Beat-Loop)
 
 Nach dem Auswählen eines Instruments kann über die 16 horizontalen Buttons festgelegt werden, an welchem Schritt des Loops das jeweilige Instrument aktiv sein soll.
 
 Beim Melodie-Instrument wird zusätzlich der aktuell ausgewählte Ton für den jeweiligen Schritt gespeichert.
+
+
+#### Instrumentenauswahl mit Tastern
+<img src="./images/verticalboard.jpeg">
 
 ### Step-Sequencer
 
 Der Sequencer arbeitet mit 16 Schritten. Jeder Schritt entspricht einem Beat innerhalb des Loops. Durch Drücken eines horizontalen Buttons wird der entsprechende Schritt für das aktuell ausgewählte Instrument aktiviert oder deaktiviert.
 
 Während der Loop läuft, können Steps weiterhin verändert werden. Der Sequencer übernimmt diese Änderungen direkt in die laufende Wiedergabe.
+
+#### Programmieren des Sequencers mittels Tastern
+<img src="./images/horizontalboard.jpeg">
 
 ### Tonwahl
 
@@ -58,17 +71,27 @@ Beim Pausieren stoppt die Wiedergabe auf dem aktuellen Schritt. Beim erneuten Dr
 
 Für feinere Tempoänderungen gibt es zusätzlich einen separaten Drehregler. Dieser besitzt ein haptisches Klick-Feedback und verändert die Geschwindigkeit schrittweise um jeweils einen BPM-Wert.
 
+
+#### Keypad für die Tonauswahl, Tempo und Puase, Rotary Encoder zur Einstellung des Tempos
+<img src="./images/rotaryencoder.jpeg">
+
 ## LED-Matrix
 
 Der aktuelle Zustand des Loops wird auf einer 16x16-LED-Matrix dargestellt. Jedes Instrument besitzt eine eigene Zeile und eine eigene Farbe. Dadurch ist gut erkennbar, welche Steps für welches Instrument aktiv sind.
 
 Ein zusätzlicher Läufer zeigt den aktuell abgespielten Beat an. So kann der zeitliche Ablauf des Loops direkt visuell verfolgt werden.
 
+### LED-Matrix mit programmiertem Beat
+<img src="./images/ledmatrix.jpeg">
+
 ## Audioausgabe
 
 Die Audioausgabe erfolgt über ein externes AUX- beziehungsweise I2S-Audio-Board vom Typ **PCM5102**. Das Board gibt ein reines Audiosignal aus.
 
 Es erfolgt keine eigene Stromversorgung oder größere Verstärkung für passive Lautsprecher. Der angeschlossene Lautsprecher oder Verstärker muss daher in der Lage sein, das Audiosignal selbst weiterzuverarbeiten beziehungsweise zu verstärken.
+
+### Audio-Modul
+<img src="./images/soundmodul.jpeg">
 
 ## Beschreibung der Nebenläufigkeit
 
