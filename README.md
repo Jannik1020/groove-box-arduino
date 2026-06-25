@@ -124,47 +124,6 @@ Dadurch werden Audioverarbeitung, Eingabeverarbeitung und visuelle Ausgabe logis
 ## Architekturübersicht
 
 ```mermaid
-flowchart LR
-    %% Eingaben
-    subgraph IN["Eingaben"]
-        B["Button-Matrix"]
-        K["Keypad"]
-        R["Rotary Encoder"]
-        S["Serielle Eingabe"]
-    end
-
-    %% Steuerung
-    C["Steuerlogik<br/>updateControl()<br/>Input-Handler"]
-
-    %% Kern
-    Q["Sequencer-Kern<br/>- noteMatrix[Instrument][Step]<br/>- currentBeat<br/>- activeInstrument<br/>- Tempo / Pause<br/>- Step-Fortschritt"]
-
-    %% Renderer / Engine
-    L["LED-Renderer<br/>LEDMatrix<br/>renderMatrix()<br/>renderCurrentBeat()"]
-    A["Audio-Engine<br/>updateAudio()<br/>Sample-Mixing<br/>Oszillator"]
-
-    %% Ausgaben
-    subgraph OUT["Ausgaben"]
-        M["LED-Matrix<br/>FastLED / WS2812"]
-        O["Audioausgabe<br/>Mozzi / I2S<br/>Samples / Synth"]
-    end
-
-    %% Verbindungen
-    B --> C
-    K --> C
-    R --> C
-    S --> C
-
-    C --> Q
-
-    Q --> L
-    Q --> A
-
-    L --> M
-    A --> O
-```
-
-```mermaid
 flowchart TD
     A[Buttons / Keypad / Rotary Encoder] --> B[Steuerlogik updateControl]
     B --> C[Sequencer-Kern]
