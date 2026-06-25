@@ -72,6 +72,31 @@ Es erfolgt keine eigene Stromversorgung oder größere Verstärkung für passive
 
 ## Beschreibung der Nebenläufigkeit
 
+```mermaid
+sequenceDiagram
+    participant MainLoop as "loop()"
+    participant Mozzi as "audioHook()"
+    participant Control as "updateControl()"
+    participant Audio as "updateAudio()"
+    participant Encoder as "Encoder ISR"
+    participant Seq as "Sequencer"
+    participant Matrix as "LEDMatrix"
+
+    MainLoop->>Mozzi: audioHook aufrufen
+
+    Mozzi->>Audio: Audioberechnung ausführen
+    Audio->>Audio: Samples und Oszillator mischen
+
+    Mozzi->>Control: Steuerlogik ausführen
+    Control->>Seq: Beat weiterschalten
+    Control->>Seq: Eingaben verarbeiten
+    Control->>Seq: Tempo oder Instrument ändern
+    Control->>Matrix: LED-Matrix aktualisieren
+
+    Encoder-->>Control: Encoderzustand wurde geändert
+
+```
+
 Die Groovebox verwendet keine klassischen Threads, sondern eine interrupt- und callbackbasierte Nebenläufigkeit. Die zeitkritischste Aufgabe ist die Audiogenerierung durch Mozzi.
 
 Die Funktion `updateAudio()` wird regelmäßig von der Audio-Engine aufgerufen und erzeugt das aktuelle Audiosignal. Dabei werden mehrere Samples sowie ein Oszillatorsignal in Echtzeit gemischt. Da diese Funktion mit hoher Frequenz ausgeführt wird, darf sie nur kurze Berechnungen enthalten. Andernfalls könnten Audioaussetzer oder Knackgeräusche entstehen.
@@ -98,45 +123,61 @@ Dadurch werden Audioverarbeitung, Eingabeverarbeitung und visuelle Ausgabe logis
 
 ## Architekturübersicht
 
-```text
-+--------------------------------------------------+
-|                  Groovebox-System                |
-+--------------------------------------------------+
+```mermaid
+flowchart LR
+    %% Eingaben
+    subgraph IN["Eingaben"]
+        B["Button-Matrix"]
+        K["Keypad"]
+        R["Rotary Encoder"]
+        S["Serielle Eingabe"]
+    end
 
- Eingaben                                  Ausgaben
-+-------------------+              +-------------------+
-| Button-Matrix      |              | LED-Matrix         |
-| Keypad             |              | FastLED / WS2812   |
-| Rotary Encoder     |              +-------------------+
-| Serielle Eingabe   |
-+---------+---------+              +-------------------+
-          |                        | Audioausgabe       |
-          v                        | Mozzi / I2S        |
-+-------------------+              | Samples / Synth    |
-| Steuerlogik        |              +-------------------+
-| updateControl()    |                        ^
-| Input-Handler      |                        |
-+---------+---------+                        |
-          |                                  |
-          v                                  |
-+--------------------------------------------------+
-|                  Sequencer-Kern                  |
-| - noteMatrix[Instrument][Step]                   |
-| - currentBeat                                    |
-| - activeInstrument                               |
-| - Tempo / Pause                                  |
-| - Step-Fortschritt                               |
-+-------------------+------------------------------+
-                    |
-        +-----------+------------+
-        |                        |
-        v                        v
-+-------------------+    +-------------------+
-| LED-Renderer       |    | Audio-Engine      |
-| LEDMatrix          |    | updateAudio()     |
-| renderMatrix()     |    | Sample-Mixing     |
-| renderCurrentBeat()|    | Oszillator        |
-+-------------------+    +-------------------+
+    %% Steuerung
+    C["Steuerlogik<br/>updateControl()<br/>Input-Handler"]
+
+    %% Kern
+    Q["Sequencer-Kern<br/>- noteMatrix[Instrument][Step]<br/>- currentBeat<br/>- activeInstrument<br/>- Tempo / Pause<br/>- Step-Fortschritt"]
+
+    %% Renderer / Engine
+    L["LED-Renderer<br/>LEDMatrix<br/>renderMatrix()<br/>renderCurrentBeat()"]
+    A["Audio-Engine<br/>updateAudio()<br/>Sample-Mixing<br/>Oszillator"]
+
+    %% Ausgaben
+    subgraph OUT["Ausgaben"]
+        M["LED-Matrix<br/>FastLED / WS2812"]
+        O["Audioausgabe<br/>Mozzi / I2S<br/>Samples / Synth"]
+    end
+
+    %% Verbindungen
+    B --> C
+    K --> C
+    R --> C
+    S --> C
+
+    C --> Q
+
+    Q --> L
+    Q --> A
+
+    L --> M
+    A --> O
+```
+
+```mermaid
+flowchart TD
+    A[Buttons / Keypad / Rotary Encoder] --> B[Steuerlogik updateControl]
+    B --> C[Sequencer-Kern]
+
+    C --> D[LEDMatrix Renderer]
+    C --> E[Audio Engine]
+
+    D --> F[16x16 LED-Matrix]
+    E --> G[Mozzi / I2S]
+    G --> H[PCM5102 Audio-Board]
+    H --> I[Lautsprecher / Verstärker]
+
+    J[Rotary Encoder ISR] --> B
 ```
 
 ## Zusammenfassung
