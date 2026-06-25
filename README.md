@@ -124,6 +124,7 @@ Dadurch werden Audioverarbeitung, Eingabeverarbeitung und visuelle Ausgabe logis
 ## Architekturübersicht
 
 ```mermaid
+
 flowchart TD
     A[Buttons / Keypad / Rotary Encoder] --> B[Steuerlogik updateControl]
     B --> C[Sequencer-Kern]
@@ -137,6 +138,7 @@ flowchart TD
     H --> I[Lautsprecher / Verstärker]
 
     J[Rotary Encoder ISR] --> B
+
 ```
 
 ## Zusammenfassung
